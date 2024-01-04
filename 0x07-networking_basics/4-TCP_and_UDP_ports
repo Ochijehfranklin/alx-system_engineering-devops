@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Shows listening sockects and PID name of program 
+
+sudo netstat -lp
