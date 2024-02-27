@@ -5,5 +5,32 @@
 sudo apt-get -y update
 sudo apt-get -y install nginx
 sudo service nginx start
-echo "Hello World!" | sudo tee /var/www/html/index.html
+# Create a simple Nginx configuration to serve "Hello World!"
+sudo bash -c 'cat > /etc/nginx/sites-available/default << EOL
+server {
+    listen  80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name _;
+
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
+}
+EOL'
+
+# Ensure the site is enabled
+sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+
+# Create the root directory for Nginx
+sudo mkdir -p /var/www/html
+
+# Create a simple "Hello World!" HTML file
+sudo bash -c 'echo "Hello World!" > /var/www/html/index.html'
+
+# Restart Nginx without using systemctl
 sudo service nginx restart
+
