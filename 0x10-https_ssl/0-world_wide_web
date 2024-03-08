@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 # Script that displays information about subdomains
 
-#!/bin/bash
-
-# Bash function to query and display subdomain information
 query_subdomain() {
     local domain=$1
     local subdomain=$2
-    local output=$(dig "$subdomain.$domain" | awk '/IN/{print $4, $5}')
-    local record_type=$(echo "$output" | awk '{print $1}')
-    local destination=$(echo "$output" | awk '{print $2}')
+    local output
+    output=$(dig "$subdomain.$domain" | awk '/IN/{print $4, $5}')
+    local record_type
+    record_type=$(echo "$output" | awk '{print $1}')
+    local destination
+    destination=$(echo "$output" | awk '{print $2}')
 
     echo "The subdomain $subdomain is a $record_type record and points to $destination"
 }
