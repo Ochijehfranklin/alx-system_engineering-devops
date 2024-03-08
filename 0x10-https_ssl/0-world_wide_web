@@ -1,35 +1,16 @@
 #!/usr/bin/env bash
 # Script that displays information about subdomains
 
-query_subdomain() {
-    local domain=$1
-    local subdomain=$2
-    local output
-    output=$(dig "$subdomain.$domain" | awk '/IN/{print $4, $5}')
-    local record_type
-    record_type=$(echo "$output" | awk '{print $1}')
-    local destination
-    destination=$(echo "$output" | awk '{print $2}')
-
-    echo "The subdomain $subdomain is a $record_type record and points to $destination"
+print_domain_subdomain () {
+    dig "$1" | grep -A1 'ANSWER SECTION:' | sed -r "s/$1./$2/g" | awk -F" " ' NR==2 { print "The subdomain " $1 " is a " $4 " record and points to " $5 }'
 }
 
-# Main script logic
-domain=$1
-subdomain=$2
-
-if [ -z "$domain" ]; then
-    echo "Error: Domain name is mandatory."
-    exit 1
-fi
-
-if [ -z "$subdomain" ]; then
-    # Query and display information for the default subdomains
-    for subdomain in www lb-01 web-01 web-02; do
-        query_subdomain "$domain" "$subdomain"
-    done
+if [ "$#" -eq 2 ]
+then
+    print_domain_subdomain "$2.$1" "$2"
 else
-    # Query and display information for the specified subdomain
-    query_subdomain "$domain" "$subdomain"
+    print_domain_subdomain "www.$1" "www"
+    print_domain_subdomain "lb-01.$1" "lb-01"
+    print_domain_subdomain "web-01.$1" "web-01"
+    print_domain_subdomain "web-02.$1" "web-02"
 fi
-
