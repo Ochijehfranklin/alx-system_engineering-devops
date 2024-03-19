@@ -22,7 +22,7 @@ COMMIT
 # End required lines
 
 
-# allow all on loopback
+# allow all on loopback.
 -A ufw-before-input -i lo -j ACCEPT
 -A ufw-before-output -o lo -j ACCEPT
 
